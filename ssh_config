@@ -1,0 +1,10 @@
+
+Host altsrv1
+  HostName 192.168.100.11
+Host altsrv2
+  HostName 192.168.100.12
+Host altsrv3
+  HostName 192.168.100.13
+Host altwks2
+  HostName 192.168.100.2
+

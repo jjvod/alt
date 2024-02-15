@@ -1,0 +1,24 @@
+- hosts: keepalived_servers
+  tasks:
+    - name: " Включаем ip forwarding"
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: true
+#        sysctl_file: /etc/sysctl.conf
+        sysctl_file: /etc/net/sysctl.conf
+        state: present
+        reload: true
+    - name: "Устанавливаем keepalived"
+      apt_rpm:
+        name: "keepalived"
+        state: present
+        update_cache: yes
+    - name: "Создаем конфиг файл keepalived"
+      template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf backup=yes
+    - name: "Установить состояние служб, разблокировать если требуется"
+      systemd:
+        name: "keepalived"
+        enabled: "yes"
+        state: "started"
+        masked: no

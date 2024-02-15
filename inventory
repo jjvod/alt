@@ -1,0 +1,15 @@
+#[keepalived_servers]
+#altsrv1
+#altsrv2
+
+keepalived_servers:
+  hosts:
+    altsrv1:
+      node_name: altsrv1
+      state: MASTER
+      priority: 150
+    altsrv2:
+      node_name: altsrv2
+      state: BACKUP
+      priority: 100
+
