@@ -22,15 +22,15 @@ vrrp_instance DNS-bind {
         }
         !Виртуальные адреса, которые настроит keealived
         virtual_ipaddress {
-                192.168.200.100/24
+                192.168.100.100/24
         }
 }
 
-virtual_server 192.168.200.100 53 {
+virtual_server 192.168.100.100 53 {
         !Частота проверок
         delay_loop 6
         !Выбираем режим балансировки, для DNS лучше выбрать Locality-Based Least-Connection
-        lb_algo lblc
+        lb_algo rr
         !Выбираем метод перенаправления, в нашем случае Direct Routing
         lb_kind dr
         protocol UDP
@@ -39,20 +39,16 @@ virtual_server 192.168.200.100 53 {
                 !Задаем вес сервера
                 weight 3
                 !Настраиваем проверку на доступность
-                UDP_CHECK {
-                        connect_timeout 3
-                        connect_port 53
-                        nb_get_retry 3
-                        delay_before_retry 3
+                DNS_CHECK  {
+                        type txt
+                        name health.test.loc
                 }
         }
         real_server 192.168.100.2 53 {
                 weight 2
-                UDP_CHECK {
-                        connect_timeout 3
-                        connect_port 53
-                        nb_get_retry 3
-                        delay_before_retry 3
+                DNS_CHECK  {
+                        type txt
+                        name health.test.loc
                 }
         }
 }

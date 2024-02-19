@@ -16,19 +16,23 @@
         sysctl_file: /etc/net/sysctl.conf
         state: present
         reload: true
-    - name: Добавляем второй ip
-      ansible.builtin.shell: ip a a 192.168.200.100/24 dev ens19
+#    - name: Добавляем второй ip
+#      ansible.builtin.shell: "ip -o a | grep 192.168.100.100 || ip a a 192.168.100.100/24 dev ens19"
+    - name: Add a line to a file if the file does not exist, without passing regexp
+      ansible.builtin.lineinfile:
+        path: /etc/net/ifaces/ens19/ipv4route
+        line: 192.168.100.1 via 192.168.100.100
     - name: "Устанавливаем bind"
       apt_rpm:
         name: "bind"
         state: present
         update_cache: yes
     - name: "Создаем конфиг файл options"
-      template: src=options.conf.j2 dest=/etc/bind/options.conf backup=yes
+      template: src=options.conf.j2 dest=/etc/bind/options.conf backup=no
     - name: "Создаем конфиг файл local"
-      template: src=local.conf.j2 dest=/etc/bind/local.conf backup=yes
+      template: src=local.conf.j2 dest=/etc/bind/local.conf backup=no
     - name: "Создаем тестовую зону"
-      template: src=test.loc.j2 dest=/etc/bind/zone/test.loc backup=yes
+      template: src=test.loc.j2 dest=/etc/bind/zone/test.loc backup=no
     - name: "Установить состояние служб, разблокировать если требуется"
       systemd:
         name: "bind"
