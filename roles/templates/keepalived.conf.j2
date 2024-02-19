@@ -2,7 +2,7 @@ global_defs {
    router_id {{ node_name }}
 }
 
-vrrp_instance ssh {
+vrrp_instance DNS-bind {
         !Указывает на то что в каком состоянии стартует нода
         state {{ state }}
         !Интерфейс для виртуальных IP
@@ -22,37 +22,38 @@ vrrp_instance ssh {
         }
         !Виртуальные адреса, которые настроит keealived
         virtual_ipaddress {
-                192.168.100.100/24
+                192.168.200.100/24
         }
 }
 
-virtual_server 192.168.100.100 22 {
+virtual_server 192.168.200.100 53 {
         !Частота проверок
         delay_loop 6
-        !Выбираем режим балансировки, для ssh лучше выбрать Locality-Based Least-Connection
+        !Выбираем режим балансировки, для DNS лучше выбрать Locality-Based Least-Connection
         lb_algo lblc
         !Выбираем метод перенаправления, в нашем случае Direct Routing
-        lb_kind DR
-        protocol TCP
+        lb_kind dr
+        protocol UDP
         !Описываем back-end серверы
-        real_server 192.168.100.11 22 {
+        real_server 192.168.100.13 53 {
                 !Задаем вес сервера
-                weight 1
+                weight 3
                 !Настраиваем проверку на доступность
-                TCP_CHECK {
+                UDP_CHECK {
                         connect_timeout 3
-                        connect_port 22
+                        connect_port 53
                         nb_get_retry 3
                         delay_before_retry 3
                 }
         }
-        real_server 192.168.100.12 22 {
-                weight 1
-                TCP_CHECK {
+        real_server 192.168.100.2 53 {
+                weight 2
+                UDP_CHECK {
                         connect_timeout 3
-                        connect_port 22
+                        connect_port 53
                         nb_get_retry 3
                         delay_before_retry 3
                 }
         }
 }
+

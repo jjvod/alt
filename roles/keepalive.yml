@@ -20,5 +20,5 @@
       systemd:
         name: "keepalived"
         enabled: "yes"
-        state: "started"
+        state: "restarted"
         masked: no

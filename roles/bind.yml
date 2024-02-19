@@ -1,0 +1,38 @@
+- hosts: bind_servers
+  tasks:
+    - name: " Включаем arp_ignore "
+      ansible.posix.sysctl:
+        name: net.ipv4.conf.ens19.arp_ignore
+        value: '1'
+        sysctl_set: true
+        sysctl_file: /etc/net/sysctl.conf
+        state: present
+        reload: true
+    - name: " Включаем  arp_announce "
+      ansible.posix.sysctl:
+        name: net.ipv4.conf.ens19.arp_announce
+        value: '2'
+        sysctl_set: true
+        sysctl_file: /etc/net/sysctl.conf
+        state: present
+        reload: true
+    - name: Добавляем второй ip
+      ansible.builtin.shell: ip a a 192.168.200.100/24 dev ens19
+    - name: "Устанавливаем bind"
+      apt_rpm:
+        name: "bind"
+        state: present
+        update_cache: yes
+    - name: "Создаем конфиг файл options"
+      template: src=options.conf.j2 dest=/etc/bind/options.conf backup=yes
+    - name: "Создаем конфиг файл local"
+      template: src=local.conf.j2 dest=/etc/bind/local.conf backup=yes
+    - name: "Создаем тестовую зону"
+      template: src=test.loc.j2 dest=/etc/bind/zone/test.loc backup=yes
+    - name: "Установить состояние служб, разблокировать если требуется"
+      systemd:
+        name: "bind"
+        enabled: "yes"
+        state: "restarted"
+        masked: no
+

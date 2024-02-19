@@ -13,3 +13,10 @@ keepalived_servers:
       state: BACKUP
       priority: 100
 
+bind_servers:
+  hosts:
+    altsrv3:
+      node_name: altsrv3
+    altwks2:
+      node_name: altwks2
+

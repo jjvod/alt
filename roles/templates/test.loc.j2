@@ -1,0 +1,19 @@
+$TTL 2d   
+$ORIGIN test.loc. 
+@         IN      SOA   ns1.test.loc. hostmaster.test.loc. (
+                                2003080815 ; serial number
+                                12h        ; refresh
+                                15m        ; update retry
+                                3w         ; expiry
+                                2h         ; minimum
+                                )
+           IN      NS      ns1.test.loc.
+           IN      NS      ns2.test.loc.
+ns1        IN      A       192.168.100.13
+ns2        IN      A       192.168.100.2
+altsrv1          A       192.168.100.11
+altsrv2          A       192.168.100.12
+altsrv3          A       192.168.100.13
+altwks1          A       192.168.100.1
+altwks2          A       192.168.100.2
+
